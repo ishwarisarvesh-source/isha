@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Krish Furnishing | Precision Sofa Pro</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #fdfaf6; padding: 20px; text-align: center; }
+        .container { background: white; padding: 30px; border-radius: 20px; display: inline-block; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid #8b4513; max-width: 500px; width: 100%; }
+        h2 { color: #8b4513; margin-bottom: 5px; }
+        select, input { padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
+        
+        /* Schematic Diagram Styles */
+        #visualFrame { margin: 20px auto; width: 220px; height: 120px; border: 2px solid #8b4513; position: relative; background: #f0ede5; border-radius: 8px; display: none; overflow: hidden; }
+        .part { position: absolute; background: #a67c52; border: 1px solid #8b4513; border-radius: 2px; transition: 0.3s; }
+        
+        .btn { width: 95%; padding: 15px; background: #8b4513; color: #d4af37; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 10px; }
+        #quote { margin-top: 25px; text-align: left; background: #fffcf5; padding: 20px; border-radius: 12px; display: none; border-left: 5px solid #28a745; }
+        
+        /* Layout for Ft + Inch inputs */
+        .dim-row { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 5px; }
+        .dim-row label { font-size: 13px; font-weight: bold; width: 60px; color: #4a3728; }
+        .dim-row input { width: 35%; }
+        .rate-row { width: 90%; margin: auto; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛋️ Master Sofa Configurator</h2>
+    <p style="color: #666; font-size: 14px;">Krish Furnishing House - Precision Mode</p>
+
+    <!-- Sofa Type -->
+    <select id="sofaType" onchange="updateDiagram()" style="width: 90%;">
+        <option value="0">-- Select Type --</option>
+        <option value="Single">Single Seater</option>
+        <option value="3-Seater">Standard 3-Seater</option>
+        <option value="L-Shape">L-Shape Corner</option>
+        <option value="U-Shape">U-Shape Luxury</option>
+        <option value="Diwan">Traditional Diwan</option>
+    </select>
+
+    <!-- Schematic Diagram -->
+    <div id="visualFrame">
+        <div id="v_back" class="part"></div>
+        <div id="v_seat" class="part"></div>
+        <div id="v_lArm" class="part"></div>
+        <div id="v_rArm" class="part"></div>
+    </div>
+
+    <!-- Precision Dimensions (Ft + Inch) -->
+    <div class="dim-row">
+        <label>Length:</label>
+        <input type="number" id="L_ft" placeholder="Ft">
+        <input type="number" id="L_in" placeholder="Inch">
+    </div>
+    <div class="dim-row">
+        <label>Width:</label>
+        <input type="number" id="W_ft" placeholder="Ft">
+        <input type="number" id="W_in" placeholder="Inch">
+    </div>
+    <div class="dim-row">
+        <label>Height:</label>
+        <input type="number" id="H_ft" placeholder="Ft">
+        <input type="number" id="H_in" placeholder="Inch">
+    </div>
+    
+    <input type="number" id="rate" placeholder="Fabric Rate per Meter (₹)" style="width: 88%;">
+
+    <button class="btn" onclick="generateQuotation()">Generate Final Quotation</button>
+
+    <!-- Result Quotation -->
+    <div id="quote">
+        <h3 id="q_title" style="margin-top:0; color: #8b4513;"></h3>
+        <p id="q_meters"></p>
+        <p id="q_stitching" style="font-size: 12px; color: #666;"></p>
+        <hr>
+        <h2 id="q_total" style="color: #28a745; margin: 0;"></h2>
+        <p style="font-size: 10px; color: #999; margin-top:10px;">*Calculation includes 20% wastage & standard 54" panha fabric logic.</p>
+    </div>
+</div>
+
+<script>
+function updateDiagram() {
+    let type = document.getElementById('sofaType').value;
+    let frame = document.getElementById('visualFrame');
+    let back = document.getElementById('v_back');
+    let seat = document.getElementById('v_seat');
+    let lArm = document.getElementById('v_lArm');
+    let rArm = document.getElementById('v_rArm');
+
+    if(type === "0") { frame.style.display = "none"; return; }
+    frame.style.display = "block";
+    rArm.style.display = "block"; lArm.style.display = "block";
+
+    if(type === "Single") {
+        back.style = "top:10px; left:40px; width:140px; height:30px;";
+        seat.style = "top:40px; left:40px; width:140px; height:60px;";
+        lArm.style = "top:35px; left:10px; width:25px; height:75px;";
+        rArm.style = "top:35px; right:10px; width:25px; height:75px;";
+    } else if(type === "3-Seater") {
+        back.style = "top:10px; left:20px; width:180px; height:25px;";
+        seat.style = "top:35px; left:20px; width:180px; height:70px; background:repeating-linear-gradient(90deg, #a67c52, #a67c52 58px, #8b4513 60px);";
+        lArm.style = "top:30px; left:2px; width:15px; height:85px;";
+        rArm.style = "top:30px; right:2px; width:15px; height:85px;";
+    } else if(type === "L-Shape") {
+        back.style = "top:5px; left:5px; width:210px; height:20px;";
+        seat.style = "top:25px; left:5px; width:150px; height:85px;";
+        lArm.style = "top:25px; right:5px; width:55px; height:85px; background:#8b4513;";
+        rArm.style.display = "none";
+    } else if(type === "U-Shape") {
+        back.style = "top:5px; left:40px; width:140px; height:20px;";
+        seat.style = "top:25px; left:40px; width:140px; height:85px;";
+        lArm.style = "top:5px; left:5px; width:30px; height:110px;";
+        rArm.style = "top:5px; right:5px; width:30px; height:110px;";
+    } else if(type === "Diwan") {
+        back.style = "top:5px; left:5px; width:210px; height:25px;";
+        seat.style = "top:30px; left:5px; width:210px; height:80px;";
+        lArm.style.display = "none"; rArm.style.display = "none";
+    }
+}
+
+function generateQuotation() {
+    let type = document.getElementById('sofaType').value;
+    let rate = Number(document.getElementById('rate').value);
+
+    // Convert Ft + Inch to Total Inches
+    let l_in = (Number(document.getElementById('L_ft').value) * 12) + Number(document.getElementById('L_in').value);
+    let w_in = (Number(document.getElementById('W_ft').value) * 12) + Number(document.getElementById('W_in').value);
+    let h_in = (Number(document.getElementById('H_ft').value) * 12) + Number(document.getElementById('H_in').value);
+
+    if(!l_in || !w_in || !h_in || !rate || type === "0") { alert("Please enter dimensions and rate!"); return; }
+
+    // Pro Surface Area Math (Seat + Back + Arms + Wastage)
+    let surfaceArea = (l_in * w_in) + (l_in * h_in * 1.5) + (w_in * h_in * 4);
+    let totalSqInch = surfaceArea * 1.25; // 25% extra for wastage
+
+    let meters = (totalSqInch / 2000).toFixed(2);
+    let finalCost = Math.round(meters * rate);
+
+    document.getElementById('quote').style.display = "block";
+    document.getElementById('q_title').innerText = type + " Sofa Quotation";
+    document.getElementById('q_meters').innerHTML = "🧵 <b>Total Fabric:</b> " + meters + " Meters";
+    document.getElementById('q_stitching').innerText = "Exact Measurement: " + l_in + "\" x " + w_in + "\" x " + h_in + "\"";
+    document.getElementById('q_total').innerText = "Total Cost: ₹" + finalCost.toLocaleString('en-IN');
+}
+</script>
+</body>
+</html>
