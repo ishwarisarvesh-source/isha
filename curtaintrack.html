@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha Track Studio | Curtain Channels</title>
+    <style>
+        :root { --metal: #455a64; --gold: #d4af37; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; }
+        
+        .studio-card {
+            max-width: 900px; margin: auto; background: white; border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-wrap: wrap;
+        }
+
+        .header { width: 100%; background: var(--metal); color: var(--gold); padding: 25px; text-align: center; border-bottom: 4px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 4px; font-weight: 300; }
+
+        .inputs { flex: 1; min-width: 320px; padding: 35px; border-right: 1px solid #eee; }
+        .visuals { flex: 1; min-width: 320px; padding: 35px; background: #fafafa; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #eee; border-radius: 10px; font-size: 15px; outline: none; }
+
+        .btn-calc { width: 100%; padding: 16px; background: var(--metal); color: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 16px; transition: 0.3s; }
+        .btn-calc:hover { background: #000; letter-spacing: 1px; }
+
+        /* Schematic Track View */
+        .track-preview {
+            width: 280px; height: 60px; border-bottom: 2px dashed #ccc;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .track-visual {
+            width: 0%; height: 8px; background: #999; border-radius: 4px;
+            position: relative; transition: width 1s ease-in-out;
+        }
+        .track-visual::after {
+            content: '••••••••'; color: #666; position: absolute; top: 10px; left: 0; width: 100%; text-align: center; font-size: 18px; letter-spacing: 5px;
+        }
+
+        .result-box { margin-top: 25px; width: 100%; display: none; text-align: left; }
+        .total-price { font-size: 32px; color: #b30000; font-weight: bold; text-align: center; margin: 15px 0; border-top: 1px solid #eee; padding-top: 15px; }
+        .formula-box { background: #fffbe6; padding: 15px; border: 1px dashed var(--gold); border-radius: 10px; font-size: 13px; color: #333; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA TRACK STUDIO</h1>
+        <p style="margin:5px 0 0; font-size:10px; color:#cfd8dc; letter-spacing: 2px;">KRISH FURNISHING HOUSE | PREMIUM CHANNELS</p>
+    </div>
+
+    <div class="inputs">
+        <label>Select Track Type</label>
+        <select id="trackType">
+            <option value="Standard M-Track">Standard M-Track (Heavy Alu)</option>
+            <option value="I-Beam Track">I-Beam Track (Flexible)</option>
+            <option value="Hospital Track">Hospital Cubicle Track</option>
+            <option value="Motorized Channel">Motorized Smart Channel</option>
+            <option value="Double Track">Double Track (Sheer + Main)</option>
+        </select>
+
+        <label>Track Length (Inches)</label>
+        <input type="number" id="tL" placeholder="e.g. 72">
+
+        <label>Rate Per Running Foot (₹)</label>
+        <input type="number" id="rate" placeholder="e.g. 150">
+
+        <button class="btn-calc" onclick="calculateTrack()">GENERATE TRACK QUOTE</button>
+    </div>
+
+    <div class="visuals">
+        <div class="track-preview">
+            <div class="track-visual" id="trackVis"></div>
+        </div>
+
+        <div id="resBox" class="result-box">
+            <div>Product: <b id="outType">-</b></div>
+            <div>Total Measurement: <b><span id="outRft">0</span> Rft.</b></div>
+            <div class="total-price" id="outTotal">₹ 0</div>
+            
+            <div class="formula-box">
+                <b>Track Pricing Logic:</b><br>
+                1. Total Rft = Track Length" ÷ 12<br>
+                2. Price = Total Rft × Rate Per Foot<br>
+                <i>*Includes wall/ceiling brackets and end-caps.</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateTrack() {
+    let l = parseFloat(document.getElementById('tL').value);
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+    let type = document.getElementById('trackType').value;
+
+    if(!l) { 
+        alert("Please enter Track Length!"); 
+        return; 
+    }
+
+    // Logic: Running Foot (Length / 12)
+    let rft = l / 12;
+    let finalRft = rft.toFixed(2);
+    let totalCost = Math.round(finalRft * r);
+
+    // Update UI
+    document.getElementById('outType').innerText = type;
+    document.getElementById('outRft').innerText = finalRft;
+    document.getElementById('outTotal').innerText = "Total: ₹ " + totalCost.toLocaleString('en-IN');
+    document.getElementById('resBox').style.display = "block";
+
+    // Schematic Animation
+    let vis = document.getElementById('trackVis');
+    vis.style.width = "100%";
+    
+    // Color change for Motorized
+    if(type.includes("Motorized")) {
+        vis.style.backgroundColor = "#d4af37"; // Gold for premium
+    } else {
+        vis.style.backgroundColor = "#999";
+    }
+}
+</script>
+
+</body>
+</html>
