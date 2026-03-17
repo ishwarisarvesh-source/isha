@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krish Furnishing House | Quotation & Invoice</title>
+<style>
+body{ font-family:Arial; background:#f2f2f2; margin:0; padding:20px; }
+.container{ max-width:1000px; margin:auto; }
+.invoice{ background:white; padding:30px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+.top{ display:flex; justify-content:space-between; flex-wrap:wrap; }
+.shop input, .shop textarea, .details input{ border:none; width:100%; font-size:16px; margin-bottom:5px; }
+.shop input{ font-weight:bold; font-size:18px; }
+#logoPreview{ max-height:80px; margin-bottom:10px; display:block; }
+h2{ text-align:center; color:#4c4cff; transition: all 0.3s ease; }
+table{ width:100%; border-collapse:collapse; margin-top:20px; font-size:14px; }
+th,td{ border:1px solid #ddd; padding:8px; text-align:center; }
+th{ background:#4c4cff; color:white; }
+td input{ width:100%; border:none; text-align:center; }
+.summary{ margin-top:20px; display:flex; justify-content:flex-end; flex-wrap:wrap; }
+.summary table{ width:320px; }
+button{ padding:10px 20px; background:#4c4cff; color:white; border:none; border-radius:5px; cursor:pointer; margin-top:10px; }
+button:hover{ background:#3333cc; }
+.terms{ margin-top:30px; font-size:14px; }
+.sign{ text-align:right; margin-top:40px; }
+@media(max-width:600px){ table{ font-size:12px; } .summary table{ width:100%; } }
+</style>
+</head>
+<body>
+<div class="container">
+<div class="invoice">
+
+<div class="top">
+    <div class="shop">
+        <!-- Logo Preview -->
+        <img id="logoPreview" src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Logo_Krish_Furnishing_House.png" alt="Krish Furnishing Logo">
+        <input type="file" id="logoUpload" onchange="previewLogo(this)">
+        <input id="shopName" value="Krish Furnishing House">
+        <textarea id="shopAddress" rows="3">Lalbag Prestige, Manchar Pune 410503
+Phone: 9284171723
+Email: your@email.com</textarea>
+    </div>
+    <div class="details">
+        <p>Invoice No: <input type="number" id="invoiceNo" value="1"></p>
+        <p>Date: <input type="date" id="invoiceDate"></p>
+    </div>
+</div>
+
+<h2 id="invHeading">QUOTATION</h2>
+<button onclick="convertToInvoice()">Convert to Invoice</button>
+
+<p>Customer Name: <input id="custName" placeholder="Enter Name"></p>
+<p>Customer Mobile: <input id="custMobile" placeholder="Enter Mobile"></p>
+<p>Customer Email: <input id="custEmail" placeholder="Enter Email"></p>
+
+<table id="items">
+<tr>
+<th>#</th>
+<th>Item</th>
+<th>HSN</th>
+<th>Qty</th>
+<th>Unit</th>
+<th>Price</th>
+<th>Discount</th>
+<th>Amount</th>
+</tr>
+<tr>
+<td class="sno">1</td>
+<td><input></td>
+<td><input></td>
+<td><input type="number" class="qty"></td>
+<td><input></td>
+<td><input type="number" class="price"></td>
+<td><input type="number" class="disc"></td>
+<td class="amt">0</td>
+</tr>
+<tr>
+<td class="sno">2</td>
+<td><input></td>
+<td><input></td>
+<td><input type="number" class="qty"></td>
+<td><input></td>
+<td><input type="number" class="price"></td>
+<td><input type="number" class="disc"></td>
+<td class="amt">0</td>
+</tr>
+</table>
+
+<button onclick="addRow()">+ Add Row</button>
+
+<div class="summary">
+<table>
+<tr>
+<td>Sub Total</td>
+<td id="subtotal">0</td>
+</tr>
+<tr>
+<td>Discount</td>
+<td><input id="maindisc" type="number"></td>
+</tr>
+<tr>
+<td>Received</td>
+<td><input id="received" type="number"></td>
+</tr>
+<tr style="background:#4c4cff;color:white">
+<td>Total</td>
+<td id="grandtotal">0</td>
+</tr>
+<tr>
+<td>Balance</td>
+<td id="balance">0</td>
+</tr>
+</table>
+</div>
+
+<div class="terms">
+<p><b>Amount In Words</b></p>
+<input id="amtWords" style="width:100%;border:none;border-bottom:1px solid #ccc">
+<br><br>
+<p><b>Terms & Conditions</b></p>
+<p contenteditable="true">
+Thank you for doing business with us.<br>
+Goods once sold will not be taken back.<br>
+Delivery depends on stock availability.<br>
+Payment should be cleared at the time of delivery.
+</p>
+</div>
+
+<div class="sign">
+
+<br><br>
+<b>Authorized Signatory</b>
+</div>
+
+<button onclick="window.print()">Print Invoice</button>
+
+</div>
+</div>
+
+<script>
+// Logo upload preview
+function previewLogo(input){
+    if(input.files && input.files[0]){
+        let reader = new FileReader();
+        reader.onload = function(e){
+            document.getElementById('logoPreview').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// --- Calculation ---
+function recalc(){
+    let qty=document.querySelectorAll(".qty");
+    let price=document.querySelectorAll(".price");
+    let disc=document.querySelectorAll(".disc");
+    let amt=document.querySelectorAll(".amt");
+    let subtotal=0;
+    for(let i=0;i<qty.length;i++){
+        let q=qty[i].value||0;
+        let p=price[i].value||0;
+        let d=disc[i].value||0;
+        let a=(q*p)-d;
+        amt[i].innerText=a;
+        subtotal+=a;
+    }
+    document.getElementById("subtotal").innerText=subtotal;
+    let mainDisc=document.getElementById("maindisc").value||0;
+    let total=subtotal-mainDisc;
+    document.getElementById("grandtotal").innerText=total;
+    let received=document.getElementById("received").value||0;
+    document.getElementById("balance").innerText=total-received;
+
+    // Amount in words
+    document.getElementById("amtWords").value = numberToWords(Math.round(total)) + " Rupees Only";
+}
+document.addEventListener("input", recalc);
+
+function addRow(){
+    let table=document.getElementById("items");
+    let row=table.insertRow();
+    row.innerHTML=`<td class="sno">0</td>
+    <td><input></td>
+    <td><input></td>
+    <td><input type="number" class="qty"></td>
+    <td><input></td>
+    <td><input type="number" class="price"></td>
+    <td><input type="number" class="disc"></td>
+    <td class="amt">0</td>`;
+    updateSerial();
+}
+function updateSerial(){
+    let sno=document.querySelectorAll(".sno");
+    for(let i=0;i<sno.length;i++){ sno[i].innerText=i+1; }
+}
+
+// Quotation to Invoice
+function convertToInvoice(){
+    const heading = document.getElementById("invHeading");
+    heading.innerText = "TAX INVOICE";
+    heading.style.color = "#ff0000";
+    heading.style.fontSize = "28px";
+    heading.style.fontWeight = "bold";
+    recalc();
+    alert("Quotation converted to Invoice!");
+}
+
+// Number to words
+function numberToWords(num) {
+    const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b = ['','', 'Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    if(num===0) return 'Zero';
+    if(num<20) return a[num];
+    if(num<100) return b[Math.floor(num/10)] + (num%10? ' '+a[num%10]:'');
+    if(num<1000) return a[Math.floor(num/100)] + ' Hundred' + (num%100? ' and '+numberToWords(num%100):'');
+    if(num<100000) return numberToWords(Math.floor(num/1000)) + ' Thousand' + (num%1000? ' '+numberToWords(num%1000):'');
+    if(num<10000000) return numberToWords(Math.floor(num/100000)) + ' Lakh' + (num%100000? ' '+numberToWords(num%100000):'');
+    return numberToWords(Math.floor(num/10000000)) + ' Crore' + (num%10000000? ' '+numberToWords(num%10000000):'');
+}
+</script>
+</body>
+</html>
