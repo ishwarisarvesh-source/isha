@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isha Blind Studio | Calculation Tool</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-grey: #2d2d2d;
+            --light-grey: #f4f4f4;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-grey);
+            margin: 0; padding: 20px; color: #333;
+        }
+
+        .studio-container {
+            max-width: 950px;
+            margin: 20px auto;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* Branding Header */
+        .brand-header {
+            width: 100%;
+            background: var(--dark-grey);
+            color: var(--gold);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 4px solid var(--gold);
+        }
+        .brand-header h1 { margin: 0; letter-spacing: 4px; font-weight: 300; font-size: 28px; }
+        .brand-header p { margin: 5px 0 0; color: #aaa; font-size: 12px; letter-spacing: 2px; }
+
+        /* Left Side: Inputs */
+        .input-panel { flex: 1; min-width: 320px; padding: 40px; border-right: 1px solid #eee; }
+        
+        /* Right Side: Visuals */
+        .visual-panel { flex: 1; min-width: 320px; padding: 40px; background: #fafafa; display: flex; flex-direction: column; align-items: center; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; text-transform: uppercase; margin-bottom: 8px; }
+        
+        input, select {
+            width: 100%; padding: 12px; border: 1.5px solid #ddd; border-radius: 8px;
+            font-size: 15px; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: var(--gold); }
+
+        .btn-calc {
+            width: 100%; padding: 16px; background: var(--dark-grey); color: var(--gold);
+            border: none; border-radius: 8px; font-weight: bold; cursor: pointer;
+            font-size: 16px; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-calc:hover { background: #000; letter-spacing: 1px; }
+
+        /* Schematic Window View */
+        .window-frame {
+            width: 200px; height: 240px; border: 10px solid #444; border-radius: 4px;
+            background: #e3f2fd; position: relative; overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .blind-sheet {
+            position: absolute; top: 0; left: 0; width: 100%; height: 0%;
+            background: repeating-linear-gradient(var(--gold), var(--gold) 15px, #c09e30 16px);
+            transition: height 1s ease-in-out; border-bottom: 3px solid #888;
+        }
+
+        /* Quotation & Formula Area */
+        .result-box { width: 100%; margin-top: 30px; display: none; animation: fadeIn 0.5s; }
+        .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .total-price { font-size: 26px; color: #b30000; font-weight: bold; text-align: center; margin: 20px 0; }
+        
+        .formula-card {
+            background: #fffbe6; border: 1px dashed var(--gold); padding: 15px;
+            border-radius: 10px; font-size: 13px; color: #555; line-height: 1.6;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="studio-container">
+    <div class="brand-header">
+        <h1>ISHA BLIND STUDIO</h1>
+        <p>A UNIT OF KRISH FURNISHING HOUSE</p>
+    </div>
+
+    <!-- Inputs -->
+    <div class="input-panel">
+        <div class="form-group">
+            <label>Blind Selection</label>
+            <select id="blindType">
+                <option value="Zebra Blind">Zebra Blind</option>
+                <option value="Roller Blind">Roller Blind</option>
+                <option value="Roman Blind">Roman Blind</option>
+                <option value="Vertical Blind">Vertical Blind</option>
+                <option value="Wooden Blind">Wooden Venetian</option>
+            </select>
+        </div>
+
+        <div style="display:flex; gap:15px;">
+            <div class="form-group" style="flex:1;">
+                <label>Width (Inches)</label>
+                <input type="number" id="inW" placeholder="e.g. 48">
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>Height (Inches)</label>
+                <input type="number" id="inH" placeholder="e.g. 60">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Rate Per Sq. Ft. (₹)</label>
+            <input type="number" id="rate" placeholder="e.g. 150">
+        </div>
+
+        <button class="btn-calc" onclick="calculateBlinds()">GENERATE QUOTE</button>
+    </div>
+
+    <!-- Visualizer & Quote -->
+    <div class="visual-panel">
+        <div class="window-frame">
+            <div class="blind-sheet" id="blindVis"></div>
+        </div>
+
+        <div class="result-box" id="resBox">
+            <div class="row"><span>Product:</span> <b id="outType"></b></div>
+            <div class="row"><span>Total Area:</span> <b><span id="outSqft">0</span> Sq. Ft.</b></div>
+            <div class="total-price" id="outTotal">₹ 0</div>
+
+            <!-- Formula Section -->
+            <div class="formula-card">
+                <b>Calculation Formula:</b><br>
+                1. Area (Sq. Ft.) = (Width" × Height") ÷ 144<br>
+                2. Final Price = Total Sq. Ft. × Rate per Sq. Ft.<br>
+                <i>*Standard industrial rounding applied for accuracy.</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateBlinds() {
+    let w = parseFloat(document.getElementById('inW').value);
+    let h = parseFloat(document.getElementById('inH').value);
+    let type = document.getElementById('blindType').value;
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!w || !h) { alert("Please enter Height and Width."); return; }
+
+    // Logic: Convert Inches to SqFt (144 sq inches = 1 sq ft)
+    let sqft = (w * h) / 144;
+    let finalSqft = sqft.toFixed(2);
+    let totalCost = Math.round(finalSqft * r);
+
+    // Update Text
+    document.getElementById('outType').innerText = type;
+    document.getElementById('outSqft').innerText = finalSqft;
+    document.getElementById('outTotal').innerText = "₹ " + totalCost.toLocaleString('en-IN');
+    
+    // Schematic Animation
+    document.getElementById('blindVis').style.height = "90%";
+    document.getElementById('resBox').style.display = "block";
+}
+</script>
+
+</body>
+</html>
