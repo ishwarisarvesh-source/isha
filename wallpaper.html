@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha Wallpaper Studio | Krish Furnishing House</title>
+    <style>
+        :root { --gold: #d4af37; --dark: #1c1c1c; --accent: #b30000; }
+        body { font-family: 'Inter', sans-serif; background: #f5f5f5; margin: 0; padding: 40px; }
+        
+        .studio-card { 
+            max-width: 900px; margin: auto; background: #fff; border-radius: 25px; 
+            overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.1); display: flex; flex-wrap: wrap;
+        }
+
+        .header { width: 100%; background: var(--dark); color: var(--gold); padding: 30px; text-align: center; border-bottom: 5px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 4px; font-weight: 300; }
+        .header p { margin: 5px 0 0; font-size: 11px; color: #888; letter-spacing: 2px; }
+
+        .input-area { flex: 1; min-width: 350px; padding: 40px; border-right: 1px solid #eee; }
+        .preview-area { flex: 1; min-width: 350px; padding: 40px; background: #fafafa; display: flex; flex-direction: column; align-items: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #999; margin-bottom: 8px; text-transform: uppercase; }
+        input { width: 100%; padding: 14px; margin-bottom: 20px; border: 1.5px solid #eee; border-radius: 10px; font-size: 16px; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        .calc-btn { width: 100%; padding: 18px; background: var(--dark); color: var(--gold); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .calc-btn:hover { background: #000; letter-spacing: 1px; }
+
+        /* Schematic Wall View */
+        .wall-blueprint { 
+            width: 240px; height: 180px; border: 6px solid #444; position: relative; 
+            background: #fff; border-radius: 4px; overflow: hidden; display: flex;
+        }
+        .wallpaper-layer { 
+            width: 0%; height: 100%; background: var(--gold); opacity: 0.7; 
+            transition: width 1.2s ease-in-out; background-image: radial-gradient(#9e7e2a 1px, transparent 1px); background-size: 20px 20px;
+        }
+
+        #result-sheet { margin-top: 30px; width: 100%; display: none; border-top: 2px dashed #ddd; padding-top: 20px; }
+        .res-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+        .final-price { font-size: 26px; color: var(--accent); font-weight: bold; text-align: center; margin-top: 15px; }
+
+        .formula-box { background: #fffbe6; padding: 15px; border: 1px dashed var(--gold); border-radius: 10px; font-size: 12px; color: #666; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA WALLPAPER STUDIO</h1>
+        <p>POWERED BY KRISH FURNISHING HOUSE</p>
+    </div>
+
+    <div class="input-area">
+        <label>Wall Width (Inches)</label>
+        <input type="number" id="wW" placeholder="e.g. 120">
+        
+        <label>Wall Height (Inches)</label>
+        <input type="number" id="wH" placeholder="e.g. 108">
+        
+        <label>Price Per Sq. Ft. (₹)</label>
+        <input type="number" id="rate" placeholder="e.g. 75">
+
+        <button class="calc-btn" onclick="calculateWallpaper()">GET QUOTATION</button>
+    </div>
+
+    <div class="preview-area">
+        <div class="wall-blueprint">
+            <div class="wallpaper-layer" id="wallVis"></div>
+        </div>
+
+        <div id="result-sheet">
+            <div class="res-row"><span>Wall Area:</span> <b id="outSqft">0</b> Sq. Ft.</div>
+            <div class="res-row"><span>Rate:</span> <b>₹ <span id="outRate">0</span>/sqft</b></div>
+            <div class="final-price" id="outTotal">Total: ₹ 0</div>
+            
+            <div class="formula-box">
+                <b>Professional Formula:</b><br>
+                • Area = (Width" × Height") ÷ 144 = Sq. Ft.<br>
+                • Total Price = Total Area × Price Per Sq. Ft.<br>
+                <i>*Installation charges extra as per site conditions.</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateWallpaper() {
+    let w = parseFloat(document.getElementById('wW').value);
+    let h = parseFloat(document.getElementById('wH').value);
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!w || !h) { alert("Please enter Wall dimensions."); return; }
+
+    // Logic: Precise Sq Ft Calculation
+    let sqft = (w * h) / 144;
+    let finalSqft = sqft.toFixed(2);
+    let totalCost = Math.round(finalSqft * r);
+
+    // Update UI
+    document.getElementById('outSqft').innerText = finalSqft;
+    document.getElementById('outRate').innerText = r;
+    document.getElementById('outTotal').innerText = "Total: ₹" + totalCost.toLocaleString('en-IN');
+    
+    // Schematic Animation (Wall filling with wallpaper)
+    document.getElementById('wallVis').style.width = "100%";
+    document.getElementById('result-sheet').style.display = "block";
+}
+</script>
+
+</body>
+</html>
