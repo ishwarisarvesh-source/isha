@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha Puffy Studio | Piece Rate Quote</title>
+    <style>
+        :root { --puffy-purple: #4a148c; --gold: #d4af37; --bg: #fdfaf6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; }
+        
+        .studio-card {
+            max-width: 900px; margin: auto; background: white; border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-wrap: wrap;
+        }
+
+        .header { width: 100%; background: var(--puffy-purple); color: var(--gold); padding: 30px; text-align: center; border-bottom: 5px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 4px; font-weight: 300; text-transform: uppercase; }
+
+        .inputs { flex: 1; min-width: 350px; padding: 40px; border-right: 1px solid #eee; }
+        .visuals { flex: 1; min-width: 350px; padding: 40px; background: #fafafa; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 14px; margin-bottom: 20px; border: 1.5px solid #eee; border-radius: 12px; font-size: 15px; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        .btn-calc { width: 100%; padding: 18px; background: var(--puffy-purple); color: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 12px; font-size: 16px; transition: 0.3s; }
+        .btn-calc:hover { background: #000; letter-spacing: 1px; }
+
+        /* Schematic Puffy View */
+        .puffy-preview { width: 180px; height: 140px; position: relative; perspective: 800px; margin: 30px 0; }
+        .puffy-box {
+            width: 100%; height: 100%; background: var(--gold); border-radius: 20px;
+            transform: rotateX(15deg); box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transition: 0.6s ease; opacity: 0.2; border: 1px solid #c5a059;
+        }
+
+        .result-box { margin-top: 30px; width: 100%; display: none; text-align: left; border-top: 1px solid #eee; padding-top: 20px; }
+        .total-price { font-size: 34px; color: #b30000; font-weight: bold; text-align: center; margin: 20px 0; }
+        .formula-box { background: #fffbe6; padding: 15px; border: 1px dashed var(--gold); border-radius: 12px; font-size: 13px; color: #333; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA PUFFY STUDIO</h1>
+        <p style="margin:5px 0 0; font-size:11px; color:#e1bee7; letter-spacing: 2px;">KRISH FURNISHING HOUSE | LUXURY OTTOMANS</p>
+    </div>
+
+    <div class="inputs">
+        <label>Dimensions (Inches)</label>
+        <div style="display:flex; gap:10px;">
+            <input type="number" id="pL" placeholder="L" value="18">
+            <input type="number" id="pW" placeholder="W" value="18">
+            <input type="number" id="pH" placeholder="H" value="16">
+        </div>
+
+        <label>Number of Pieces (Qty)</label>
+        <input type="number" id="qty" value="1">
+
+        <label>Rate Per Piece (₹)</label>
+        <input type="number" id="rate" placeholder="e.g. 2500">
+
+        <button class="btn-calc" onclick="calculatePcs()">GENERATE QUOTATION</button>
+    </div>
+
+    <div class="visuals">
+        <div class="puffy-preview">
+            <div class="puffy-box" id="puffyVis"></div>
+        </div>
+
+        <div id="resBox" class="result-box">
+            <div style="font-size: 14px; margin-bottom: 10px;">
+                Size: <b id="outDim">0 x 0 x 0</b> | Quantity: <b id="outQty">0</b>
+            </div>
+            <div class="total-price" id="outTotal">₹ 0</div>
+            
+            <div class="formula-box">
+                <b>Pricing Logic (Per Piece):</b><br>
+                1. Quote = Number of Pieces × Rate Per Piece<br>
+                2. Custom Size: Dimensions are recorded for production.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculatePcs() {
+    let l = parseFloat(document.getElementById('pL').value);
+    let w = parseFloat(document.getElementById('pW').value);
+    let h = parseFloat(document.getElementById('pH').value);
+    let qty = parseInt(document.getElementById('qty').value) || 1;
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!r) { alert("Please enter the Rate!"); return; }
+
+    // Logic: Simple Piece Rate
+    let totalCost = qty * r;
+
+    // Update UI
+    document.getElementById('outDim').innerText = l + '" x ' + w + '" x ' + h + '"';
+    document.getElementById('outQty').innerText = qty;
+    document.getElementById('outTotal').innerText = "Total: ₹ " + totalCost.toLocaleString('en-IN');
+    document.getElementById('resBox').style.display = "block";
+
+    // Schematic Animation
+    let vis = document.getElementById('puffyVis');
+    vis.style.opacity = "1";
+    // Adjust visual size slightly based on inputs
+    vis.style.width = (l * 5) + "px"; 
+    vis.style.height = (h * 5) + "px";
+}
+</script>
+
+</body>
+</html>
