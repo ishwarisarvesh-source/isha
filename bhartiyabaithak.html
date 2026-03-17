@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha BhartiyaBaithak Studio | Krish Furnishing House</title>
+    <style>
+        :root { --royal-red: #800000; --gold: #d4af37; --cream: #fffdf5; }
+        body { font-family: 'Inter', sans-serif; background: #fdfaf6; margin: 0; padding: 20px; }
+        
+        .studio-card {
+            max-width: 950px; margin: auto; background: white; border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-wrap: wrap;
+            border: 1px solid #eee;
+        }
+
+        .header { width: 100%; background: var(--royal-red); color: var(--gold); padding: 30px; text-align: center; border-bottom: 5px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 5px; font-weight: 300; text-transform: uppercase; }
+
+        .inputs { flex: 1; min-width: 350px; padding: 40px; border-right: 1px solid #eee; }
+        .visuals { flex: 1; min-width: 350px; padding: 40px; background: var(--cream); display: flex; flex-direction: column; align-items: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
+
+        .btn-calc { width: 100%; padding: 18px; background: var(--royal-red); color: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 16px; transition: 0.3s; }
+        .btn-calc:hover { background: #600000; letter-spacing: 1px; }
+
+        /* Baithak Schematic View */
+        .baithak-preview {
+            width: 260px; height: 120px; position: relative; margin: 40px 0;
+            perspective: 500px;
+        }
+        .gadda-base {
+            width: 100%; height: 20px; background: var(--gold); border-radius: 5px;
+            position: absolute; bottom: 0; transition: 0.5s; opacity: 0.3;
+        }
+        .bolster {
+            width: 80px; height: 25px; background: var(--royal-red); border-radius: 20px;
+            position: absolute; top: 10px; opacity: 0; transition: 0.5s;
+        }
+
+        .result-box { width: 100%; display: none; border-top: 2px dashed #ddd; margin-top: 20px; padding-top: 20px; }
+        .total-price { font-size: 28px; color: var(--royal-red); font-weight: bold; text-align: center; margin: 15px 0; }
+        .formula-card { background: #fff9e6; border: 1px dashed var(--gold); padding: 15px; border-radius: 10px; font-size: 12px; color: #555; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA  BHARTIYABAITHAK STUDIO</h1>
+        <p style="margin:5px 0 0; font-size:10px; color:#e0c07a; letter-spacing: 2px;">AUTHENTIC INDIAN SEATING BY KRISH FURNISHING HOUSE</p>
+    </div>
+
+    <div class="inputs">
+        <label>Fabric Selection</label>
+        <select id="bFabric">
+            <option value="Velvet Touch">Velvet Touch</option>
+            <option value="Cotton Block Print">Cotton Block Print</option>
+            <option value="Premium Jacquard">Premium Jacquard</option>
+            <option value="fabric">fabric</option>
+
+
+        </select>
+
+        <div style="display:flex; gap:15px;">
+            <div style="flex:1;"><label>Width (Inches)</label><input type="number" id="bW" value="36"></div>
+            <div style="flex:1;"><label>Length (Inches)</label><input type="number" id="bL" value="72"></div>
+        </div>
+
+        <label>Rate (₹ Per Sq. Ft.)</label>
+        <input type="number" id="rate" value="250">
+
+        <label>Add Bolsters (Lodh) - ₹500/piece</label>
+        <input type="number" id="bolsters" value="2">
+
+        <button class="btn-calc" onclick="calculateBaithak()">GENERATE ROYAL QUOTE</button>
+    </div>
+
+    <div class="visuals">
+        <div class="baithak-preview">
+            <div class="gadda-base" id="gaddaVis"></div>
+            <div class="bolster" id="bolsterL" style="left: -20px; transform: rotate(-90deg);"></div>
+            <div class="bolster" id="bolsterR" style="right: -20px; transform: rotate(90deg);"></div>
+        </div>
+
+        <div id="resBox" class="result-box">
+            <p>Area: <b><span id="outSqft">0</span> Sq. Ft.</b></p>
+            <p>Components: <b>1 Gadda + <span id="outB">0</span> Bolsters</b></p>
+            <div class="total-price" id="outTotal">₹ 0</div>
+            
+            <div class="formula-card">
+                <b>Baithak Formula:</b><br>
+                1. Gadda Price = (Width" × Length" ÷ 144) × Rate<br>
+                2. Accessory Price = Number of Bolsters × 500<br>
+                3. Total = Gadda Price + Accessory Price
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateBaithak() {
+    let w = parseFloat(document.getElementById('bW').value);
+    let l = parseFloat(document.getElementById('bL').value);
+    let bCount = parseInt(document.getElementById('bolsters').value) || 0;
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!w || !l) return;
+
+    let sqft = (w * l) / 144;
+    let gaddaPrice = sqft * r;
+    let bolsterPrice = bCount * 500;
+    let total = Math.round(gaddaPrice + bolsterPrice);
+
+    // UI Updates
+    document.getElementById('outSqft').innerText = sqft.toFixed(2);
+    document.getElementById('outB').innerText = bCount;
+    document.getElementById('outTotal').innerText = "Total: ₹ " + total.toLocaleString('en-IN');
+    document.getElementById('resBox').style.display = "block";
+
+    // Animation
+    document.getElementById('gaddaVis').style.opacity = "1";
+    document.getElementById('bolsterL').style.opacity = (bCount > 0) ? "1" : "0";
+    document.getElementById('bolsterR').style.opacity = (bCount > 1) ? "1" : "0";
+}
+</script>
+
+</body>
+</html>
