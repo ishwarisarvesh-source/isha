@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Krish Furnishing House | All-in-One</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<!-- ===== Hero Section ===== -->
+<header>
+  <h1>Krish Furnishing House</h1>
+  <p>Style, Comfort & Quality – All in One</p>
+  <div class="cta-buttons">
+    <button onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Explore Products</button>
+    <button onclick="window.location='#contact'">Book Free Visit</button>
+  </div>
+</header>
+
+<!-- ===== 13 Tools Section ===== -->
+<section id="tools">
+  <div class="container">
+    <div class="card" onclick="openModal(0)"><h3>Sofa Puffy</h3><p>sofapuffy.html</p></div>
+    <div class="card" onclick="openModal(1)"><h3>Wallpaper</h3><p>wallpaper.html</p></div>
+    <div class="card" onclick="openModal(2)"><h3>Bhartiya Baithak</h3><p>bhartiyabaithak.html</p></div>
+    <div class="card" onclick="openModal(3)"><h3>Artificial Grass</h3><p>artificialgrass.html</p></div>
+    <div class="card" onclick="openModal(4)"><h3>Bed Back</h3><p>bedback.html</p></div>
+    <div class="card" onclick="openModal(5)"><h3>Blinds</h3><p>blinds.html</p></div>
+    <div class="card" onclick="openModal(6)"><h3>Carpet</h3><p>carpet.html</p></div>
+    <div class="card" onclick="openModal(7)"><h3>Curtain Track</h3><p>curtaintrack.html</p></div>
+    <div class="card" onclick="openModal(8)"><h3>Curtains</h3><p>curtains.html</p></div>
+    <div class="card" onclick="openModal(9)"><h3>Mattress</h3><p>mattress.html</p></div>
+    <div class="card" onclick="openModal(10)"><h3>Sofa Set</h3><p>sofa.html</p></div>
+    <div class="card" onclick="openModal(11)"><h3>Sofa Teapoy</h3><p>sofateapoy.html</p></div>
+    <div class="card" onclick="openModal(12)"><h3>Invoice/Quotation</h3><p>invoicefinal.html</p></div>
+  </div>
+</section>
+
+<!-- ===== Modal ===== -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <iframe id="toolFrame"></iframe>
+  </div>
+</div>
+
+<!-- ===== Gallery Section Placeholder ===== -->
+<section class="gallery">
+  <h2 style="text-align:center; margin-bottom:15px;">Gallery</h2>
+  <div class="gallery">
+    <img src="images/gallery/img1.jpg" alt="Gallery Image 1">
+    <img src="images/gallery/img2.jpg" alt="Gallery Image 2">
+    <img src="images/gallery/img3.jpg" alt="Gallery Image 3">
+    <img src="images/gallery/img4.jpg" alt="Gallery Image 4">
+  </div>
+</section>
+
+<!-- ===== AI Search / Image Generation Placeholder ===== -->
+<section class="ai-section">
+  <h2>AI Search & Image Generation</h2>
+  <input type="text" placeholder="Search products or generate images...">
+  <button>Search / Generate</button>
+  <p style="margin-top:10px; font-size:12px; color:#555;">(Placeholder – API integration required)</p>
+</section>
+
+<!-- ===== About / Contact ===== -->
+<section class="about-contact" id="contact">
+  <b>About Us:</b> Krish Furnishing House provides premium home furnishing solutions including sofas, blinds, curtains, carpets, and baithaks. <br><br>
+  <b>Contact:</b> WhatsApp: +91-9284171723 | Email: info@krishfurnishing.com <br><br>
+  <b>Address:</b> Lalbag Prestige, Manchar-Pune-410503
+</section>
+
+<!-- ===== Footer ===== -->
+<footer>
+  Website created by Ishwari Tambe | &copy; 2026 Krish Furnishing House
+</footer>
+
+<!-- ===== Scripts ===== -->
+<script src="js/main.js"></script>
+<script>
+/* ===== 13 Tools Modal JS ===== */
+let tools = [
+  'tools/sofapuffy.html',
+  'tools/wallpaper.html',
+  'tools/bhartiyabaithak.html',
+  'tools/artificialgrass.html',
+  'tools/bedback.html',
+  'tools/blinds.html',
+  'tools/carpet.html',
+  'tools/curtaintrack.html',
+  'tools/curtains.html',
+  'tools/mattress.html',
+  'tools/sofa.html',
+  'tools/sofateapoy.html',
+  'tools/invoicefinal.html'
+];
+function openModal(index){
+  let iframe=document.getElementById('toolFrame');
+  iframe.src=tools[index];
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+  document.getElementById('toolFrame').src='';
+}
+
+/* ===== Service Worker Registration ===== */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js')
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.log('Service Worker registration failed', err));
+  });
+}
+</script>
+
+</body>
+</html>
