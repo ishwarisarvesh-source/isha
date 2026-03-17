@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha Mattress Studio | Krish Furnishing House</title>
+    <style>
+        :root { --mattress-blue: #2c3e50; --gold: #d4af37; --light-bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light-bg); margin: 0; padding: 20px; }
+        
+        .studio-card {
+            max-width: 900px; margin: auto; background: white; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-wrap: wrap;
+        }
+
+        .header { width: 100%; background: var(--mattress-blue); color: var(--gold); padding: 25px; text-align: center; border-bottom: 4px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 3px; font-size: 26px; font-weight: 300; }
+
+        .inputs { flex: 1; min-width: 320px; padding: 35px; border-right: 1px solid #eee; }
+        .visuals { flex: 1; min-width: 320px; padding: 35px; background: #fff; text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1.5px solid #eee; border-radius: 10px; font-size: 15px; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        .btn-calc { width: 100%; padding: 16px; background: var(--mattress-blue); color: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 16px; transition: 0.3s; }
+        .btn-calc:hover { background: #000; letter-spacing: 1px; }
+
+        /* Mattress Schematic View */
+        .bed-frame {
+            width: 220px; height: 160px; border: 4px solid #ddd; margin: 20px auto;
+            background: #fff; position: relative; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .mattress-3d {
+            width: 80%; height: 80%; background: #eee; border-radius: 10px;
+            transition: all 0.8s ease; position: relative; border: 1px solid #ccc;
+        }
+        .active-mattress { background: var(--gold); transform: scale(1.05); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
+
+        .result-box { margin-top: 25px; width: 100%; display: none; text-align: left; }
+        .total-price { font-size: 28px; color: #b30000; font-weight: bold; margin: 15px 0; border-top: 1px solid #eee; padding-top: 10px; text-align: center; }
+        .formula-box { background: #f0f7ff; padding: 15px; border: 1px dashed #2c3e50; border-radius: 10px; font-size: 12px; line-height: 1.6; color: #444; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA MATTRESS STUDIO</h1>
+        <p style="margin:5px 0 0; font-size:10px; color:#aaa; letter-spacing: 2px;">BY KRISH FURNISHING HOUSE</p>
+    </div>
+
+    <div class="inputs">
+        <label>Select Mattress Type</label>
+        <select id="mType">
+            <option value="Memory Foam">Memory Foam</option>
+            <option value="Orthopedic Coir">Orthopedic Coir</option>
+            <option value="Pocket Spring">Pocket Spring</option>
+            <option value="Latex Luxury">Latex Luxury</option>
+            <option value="Dr Orthopedic">Dr Orthopedic</option>
+            <option value="Bounded foam">Bounded foam</option>
+        </select>
+
+        <div style="display:flex; gap:15px;">
+            <div style="flex:1;">
+                <label>Width (Inches)</label>
+                <input type="number" id="mW" value="72">
+            </div>
+            <div style="flex:1;">
+                <label>Length (Inches)</label>
+                <input type="number" id="mL" value="75">
+            </div>
+        </div>
+
+        <label>Price Per Sq. Ft. (₹)</label>
+        <input type="number" id="rate" value="1200">
+
+        <button class="btn-calc" onclick="calculateMattress()">GENERATE QUOTE</button>
+    </div>
+
+    <div class="visuals">
+        <div class="bed-frame">
+            <div class="mattress-3d" id="mattressVis"></div>
+        </div>
+
+        <div id="resBox" class="result-box">
+            <p>Product: <b id="outType">-</b></p>
+            <p>Total Area: <b><span id="outSqft">0</span> Sq. Ft.</b></p>
+            <div class="total-price" id="outTotal">₹ 0</div>
+            
+            <div class="formula-box">
+                <b>Mattress Calculation Logic:</b><br>
+                1. Area (Sq. Ft.) = (Width" × Length") ÷ 144<br>
+                2. Quote = Total Area × Rate Per Sq. Ft.<br>
+                <i>*Standard sizes apply. For thickness above 6", rates may vary.</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateMattress() {
+    let w = parseFloat(document.getElementById('mW').value);
+    let l = parseFloat(document.getElementById('mL').value);
+    let type = document.getElementById('mType').value;
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!w || !l) { alert("Please enter dimensions"); return; }
+
+    // Logic: Convert Sq Inches to Sq Ft
+    let sqft = (w * l) / 144;
+    let finalSqft = sqft.toFixed(2);
+    let totalCost = Math.round(finalSqft * r);
+
+    // UI Update
+    document.getElementById('outType').innerText = type;
+    document.getElementById('outSqft').innerText = finalSqft;
+    document.getElementById('outTotal').innerText = "₹ " + totalCost.toLocaleString('en-IN');
+    document.getElementById('resBox').style.display = "block";
+
+    // Schematic Animation
+    let vis = document.getElementById('mattressVis');
+    vis.classList.add('active-mattress');
+    vis.style.width = (w/l * 80) + "%"; // Simple proportional scaling
+}
+</script>
+
+</body>
+</html>
