@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha Grass Studio | Krish Furnishing House</title>
+    <style>
+        :root { --grass-green: #2d5a27; --gold: #d4af37; --light-bg: #f0f4f0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--light-bg); margin: 0; padding: 20px; }
+        
+        .studio-card {
+            max-width: 900px; margin: auto; background: white; border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-wrap: wrap;
+        }
+
+        .header { width: 100%; background: var(--grass-green); color: var(--gold); padding: 25px; text-align: center; border-bottom: 4px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 3px; font-size: 26px; font-weight: 300; }
+
+        .inputs { flex: 1; min-width: 320px; padding: 35px; border-right: 1px solid #eee; }
+        .visuals { flex: 1; min-width: 320px; padding: 35px; background: #fff; text-align: center; display: flex; flex-direction: column; align-items: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 20px; border: 1.5px solid #eee; border-radius: 10px; font-size: 15px; outline: none; }
+
+        .btn-calc { width: 100%; padding: 16px; background: var(--grass-green); color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 16px; transition: 0.3s; }
+        .btn-calc:hover { background: #1e3d1a; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        /* Grass Schematic View */
+        .lawn-frame {
+            width: 240px; height: 160px; border: 4px solid #ddd; margin: 20px auto;
+            background: #e0e0e0; position: relative; border-radius: 10px; overflow: hidden;
+        }
+        .grass-texture {
+            width: 100%; height: 0%; background: #4caf50; 
+            background-image: radial-gradient(#388e3c 15%, transparent 16%);
+            background-size: 10px 10px;
+            transition: height 1s ease-in-out; position: absolute; bottom: 0;
+        }
+
+        .result-box { margin-top: 25px; width: 100%; display: none; text-align: left; }
+        .total-price { font-size: 28px; color: #b30000; font-weight: bold; margin: 15px 0; border-top: 1px solid #eee; padding-top: 10px; text-align: center; }
+        .formula-box { background: #e8f5e9; padding: 15px; border: 1px dashed var(--grass-green); border-radius: 10px; font-size: 12px; line-height: 1.6; color: #2e7d32; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA GRASS STUDIO</h1>
+        <p style="margin:5px 0 0; font-size:10px; color:#a5d6a7; letter-spacing: 2px;">PREMIUM ARTIFICIAL TURF BY KRISH FURNISHING HOUSE</p>
+    </div>
+
+    <div class="inputs">
+        <label>Select Grass Density (mm)</label>
+        <select id="gType">
+            <option value="25mm Natural">25mm Natural Look</option>
+            <option value="35mm Super Lush">35mm Super Lush</option>
+            <option value="40mm Premium Turf">40mm Premium Turf</option>
+            <option value="15mm Basic Green">15mm Basic Green</option>
+        </select>
+
+        <div style="display:flex; gap:15px;">
+            <div style="flex:1;">
+                <label>Area Width (Inches)</label>
+                <input type="number" id="gW" placeholder="e.g. 120">
+            </div>
+            <div style="flex:1;">
+                <label>Area Length (Inches)</label>
+                <input type="number" id="gL" placeholder="e.g. 120">
+            </div>
+        </div>
+
+        <label>Price Per Sq. Ft. (₹)</label>
+        <input type="number" id="rate" placeholder="e.g. 45">
+
+        <button class="btn-calc" onclick="calculateGrass()">GENERATE GREEN QUOTE</button>
+    </div>
+
+    <div class="visuals">
+        <div class="lawn-frame">
+            <div class="grass-texture" id="grassVis"></div>
+        </div>
+
+        <div id="resBox" class="result-box">
+            <p>Quality: <b id="outType">-</b></p>
+            <p>Total Area: <b><span id="outSqft">0</span> Sq. Ft.</b></p>
+            <div class="total-price" id="outTotal">₹ 0</div>
+            
+            <div class="formula-box">
+                <b>Grass Calculation Logic:</b><br>
+                1. Area (Sq. Ft.) = (Width" × Length") ÷ 144<br>
+                2. Price = Total Area × Rate Per Sq. Ft.<br>
+                <i>*Installation and joining tape might be extra.</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateGrass() {
+    let w = parseFloat(document.getElementById('gW').value);
+    let l = parseFloat(document.getElementById('gL').value);
+    let type = document.getElementById('gType').value;
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!w || !l) { alert("Please enter Dimensions"); return; }
+
+    // Logic: Precise Sq Ft Calculation
+    let sqft = (w * l) / 144;
+    let finalSqft = sqft.toFixed(2);
+    let totalCost = Math.round(finalSqft * r);
+
+    // Update UI
+    document.getElementById('outType').innerText = type;
+    document.getElementById('outSqft').innerText = finalSqft;
+    document.getElementById('outTotal').innerText = "Total: ₹ " + totalCost.toLocaleString('en-IN');
+    document.getElementById('resBox').style.display = "block";
+
+    // Schematic Animation
+    document.getElementById('grassVis').style.height = "100%";
+}
+</script>
+
+</body>
+</html>
