@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Isha Carpet Studio | Sq. Ft. Quote</title>
+    <style>
+        :root { --carpet-red: #8e1b1b; --gold: #d4af37; --bg: #f9f9f9; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; }
+        
+        .studio-card {
+            max-width: 900px; margin: auto; background: white; border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-wrap: wrap;
+        }
+
+        .header { width: 100%; background: var(--carpet-red); color: var(--gold); padding: 25px; text-align: center; border-bottom: 4px solid var(--gold); }
+        .header h1 { margin: 0; letter-spacing: 4px; font-weight: 300; }
+
+        .inputs { flex: 1; min-width: 320px; padding: 35px; border-right: 1px solid #eee; }
+        .visuals { flex: 1; min-width: 320px; padding: 35px; background: #fafafa; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        label { display: block; font-size: 11px; font-weight: bold; color: #888; margin-bottom: 8px; text-transform: uppercase; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1.5px solid #eee; border-radius: 10px; font-size: 15px; outline: none; }
+
+        .btn-calc { width: 100%; padding: 16px; background: var(--carpet-red); color: var(--gold); border: none; font-weight: bold; cursor: pointer; border-radius: 10px; font-size: 16px; transition: 0.3s; }
+        .btn-calc:hover { background: #000; letter-spacing: 1px; }
+
+        /* Carpet Schematic View */
+        .carpet-preview {
+            width: 250px; height: 180px; border: 2px dashed #ccc; padding: 10px;
+            display: flex; align-items: center; justify-content: center; background: #fff;
+        }
+        .carpet-visual {
+            width: 0%; height: 0%; background: var(--carpet-red); 
+            background-image: radial-gradient(var(--gold) 1px, transparent 1px);
+            background-size: 15px 15px;
+            transition: all 0.8s ease-in-out; border-radius: 4px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .result-box { margin-top: 25px; width: 100%; display: none; text-align: left; }
+        .total-price { font-size: 32px; color: #b30000; font-weight: bold; text-align: center; margin: 15px 0; border-top: 1px solid #eee; padding-top: 15px; }
+        .formula-box { background: #fffbe6; padding: 15px; border: 1px dashed var(--gold); border-radius: 10px; font-size: 13px; color: #333; line-height: 1.6; }
+    </style>
+</head>
+<body>
+
+<div class="studio-card">
+    <div class="header">
+        <h1>ISHA CARPET STUDIO</h1>
+        <p style="margin:5px 0 0; font-size:10px; color:#e0c07a; letter-spacing: 2px;">KRISH FURNISHING HOUSE | LUXURY FLOORING</p>
+    </div>
+
+    <div class="inputs">
+        <label>Carpet Length (Inches)</label>
+        <input type="number" id="cL" placeholder="e.g. 120">
+
+        <label>Carpet Width (Inches)</label>
+        <input type="number" id="cW" placeholder="e.g. 96">
+
+        <label>Rate Per Sq. Ft. (₹)</label>
+        <input type="number" id="rate" placeholder="e.g. 120">
+
+        <button class="btn-calc" onclick="calculateCarpet()">GENERATE SQFT QUOTE</button>
+    </div>
+
+    <div class="visuals">
+        <div class="carpet-preview">
+            <div class="carpet-visual" id="carpetVis"></div>
+        </div>
+
+        <div id="resBox" class="result-box">
+            <div>Total Area: <b><span id="outSqft">0</span> Sq. Ft.</b></div>
+            <div class="total-price" id="outTotal">₹ 0</div>
+            
+            <div class="formula-box">
+                <b>Carpet Pricing Logic:</b><br>
+                1. Area (Sq. Ft.) = (Length" × Width") ÷ 144<br>
+                2. Price = Total Area × Rate Per Sq. Ft.<br>
+                <i>*Prices may vary based on material density and pile height.</i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calculateCarpet() {
+    let l = parseFloat(document.getElementById('cL').value);
+    let w = parseFloat(document.getElementById('cW').value);
+    let r = parseFloat(document.getElementById('rate').value) || 0;
+
+    if(!l || !w) { 
+        alert("Please enter Length and Width!"); 
+        return; 
+    }
+
+    // Logic: Convert Inches to Sq Ft (144 sq inches = 1 sq ft)
+    let sqft = (l * w) / 144;
+    let finalSqft = sqft.toFixed(2);
+    let totalCost = Math.round(finalSqft * r);
+
+    // Update UI
+    document.getElementById('outSqft').innerText = finalSqft;
+    document.getElementById('outTotal').innerText = "Total: ₹ " + totalCost.toLocaleString('en-IN');
+    document.getElementById('resBox').style.display = "block";
+
+    // Schematic Animation (Scaling the carpet area)
+    let vis = document.getElementById('carpetVis');
+    vis.style.width = "90%";
+    vis.style.height = "90%";
+    
+    // Adjust aspect ratio visually
+    if (l > w) {
+        vis.style.width = "60%";
+    } else if (w > l) {
+        vis.style.height = "60%";
+    }
+}
+</script>
+
+</body>
+</html>
